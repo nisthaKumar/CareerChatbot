@@ -1,36 +1,31 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Message from "./Message"; // Import the Message component
-import "../styles/Chat.css"; // Import styles
+import Message from "./Message";
+import "../styles/Chat.css";
 
 const Chat = () => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([]);
-    const [isTyping, setIsTyping] = useState(false); // For typing indicator
+    const [isTyping, setIsTyping] = useState(false);
 
     const sendMessage = async () => {
         if (!input.trim()) return;
 
         const userMessage = { text: input, sender: "user" };
-
-        // Add user message using previous state to avoid duplication
         setMessages((prevMessages) => [...prevMessages, userMessage]);
-        setInput(""); // Clear input field
+        setInput("");
 
         try {
-            setIsTyping(true); // Start typing indicator
+            setIsTyping(true);
             const response = await axios.post("http://127.0.0.1:8000/ask", { user_input: input });
-            setIsTyping(false); // Stop typing indicator
 
-            // Add bot response
+            setIsTyping(false);
             setMessages((prevMessages) => [
                 ...prevMessages,
-                userMessage,
                 { text: response.data.response, sender: "bot" },
             ]);
         } catch (error) {
-            setIsTyping(false); // Stop typing indicator
-            // Add error message
+            setIsTyping(false);
             setMessages((prevMessages) => [
                 ...prevMessages,
                 { text: "Error fetching response.", sender: "bot" },
